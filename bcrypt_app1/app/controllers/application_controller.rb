@@ -17,12 +17,7 @@ class ApplicationController < Sinatra::Base
 
 
   get '/' do
-    if not_logged_in
-      redirect_to_users
-    else
-      logged_in
-    end
-
+    not_logged_in ? redirect_to_users : logged_in
   end
 
   helpers do
@@ -32,7 +27,7 @@ class ApplicationController < Sinatra::Base
     end
 
     def logged_in
-      current_user
+      current_user unless @user.present?
       flash[:success_alert] = "Welcome, #{@user.name}!"
       redirect_to_home_page
     end
