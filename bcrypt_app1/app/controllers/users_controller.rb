@@ -2,39 +2,19 @@ class UsersController < ApplicationController
 
   # INDEX: users view all.
   get '/users' do
-
     if not_logged_in
       erb :'users/login'
     else
-      binding.pry
       logged_in
-      # flash[:success_alert] = "Successfully Logged In."
-      # redirect_to_home_page
     end
-
-
-    #
-    # if session[:user_id]
-    #   binding.pry
-    #   redirect '/success'
-    # else
-    #   binding.pry
-    #   erb :'users/login'
-    #   # erb :'users/login', locals: {create:false, error:false}
-    # end
-
   end
 
 
   get '/users/login' do
-    binding.pry
     if @user.valid?
-      binding.pry
       session[:user_id] = @user.id
-      binding.pry
       logged_in
     else
-      binding.pry
       redirect '/users'
     end
   end
@@ -89,12 +69,9 @@ class UsersController < ApplicationController
 
     if @user.present?
       session[:user_id] = @user.id
-      binding.pry
       logged_in
     else
-      binding.pry
       flash[:error_alert] = "Invalid Data.  Please try again."
-      # redirect '/users/register'
       @user = User.new
       erb :'users/register'
     end
@@ -150,15 +127,10 @@ class UsersController < ApplicationController
   end
 
 
-
   helpers do
-
     def validate_user(params)
       User.authenticate(params[:user][:email], params[:user][:pw_hash])
     end
-
   end
-
-
 
 end
