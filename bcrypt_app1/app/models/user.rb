@@ -1,5 +1,10 @@
 class User < ActiveRecord::Base
-  # users.pw_hash in the database is a :string
+  # validates :name, presence: true
+  # validates :email, presence: true, uniqueness: true
+  # validates :pw_hash, presence: true
+  validates :name, :email, :pw_hash, presence: true
+  validates :email, uniqueness: true
+
   include BCrypt
 
   def password

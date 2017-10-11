@@ -94,6 +94,8 @@ class UsersController < ApplicationController
     else
       binding.pry
       flash[:error_alert] = "Invalid Data.  Please try again."
+      # redirect '/users/register'
+      @user = User.new
       erb :'users/register'
     end
 
