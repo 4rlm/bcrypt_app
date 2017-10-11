@@ -1,83 +1,103 @@
 class UsersController < ApplicationController
 
-  # def initialize
-  #   @user = nil
-  #   binding.pry
-  # end
-
   # INDEX: users view all.
   get '/users' do
-    binding.pry
-    if session[:user_id]
-      binding.pry
-      redirect '/success'
-    else
-      binding.pry
+
+    if not_logged_in
       erb :'users/login'
-      # erb :'users/login', locals: {create:false, error:false}
+    else
+      binding.pry
+      logged_in
+      # flash[:success_alert] = "Successfully Logged In."
+      # redirect_to_home_page
     end
+
+
+    #
+    # if session[:user_id]
+    #   binding.pry
+    #   redirect '/success'
+    # else
+    #   binding.pry
+    #   erb :'users/login'
+    #   # erb :'users/login', locals: {create:false, error:false}
+    # end
 
   end
 
-  # NEW: users new
-  get '/users/new' do
-    if session[:user_id]
-      binding.pry
-      redirect '/success'
-    else
-      @user = User.new  ## Prevents errors on Form Partial.
-      erb :'users/new'
-      # erb :login, locals: { create:true, error:false }
-    end
 
-  end
-
-  post '/users' do
-    if session[:user_id]
+  get '/users/login' do
+    binding.pry
+    if @user.valid?
       binding.pry
-      redirect '/success'
-    else
-      new_user = User.create(params[:user])
-    end
-
-    if new_user.invalid?
-      binding.pry
-      erb :'users/new'
-      # erb :login, locals:{create:true, error:new_user.errors.full_messages}
-    else
-      @user = User.authenticate(params[:user][:email], params[:user][:pw_hash])
       session[:user_id] = @user.id
       binding.pry
-      redirect '/login'
-    end
-
-  end
-
-  ###############
-  get '/login' do
-    if @user != nil
-      binding.pry
-      session[:user_id] = @user.id
-      redirect '/success'
+      logged_in
     else
       binding.pry
       redirect '/users'
     end
   end
 
+  post '/users/login' do
+    @user = validate_user(params)
 
-  ################
+    if @user.present?
+      session[:user_id] = @user.id
+      logged_in
+    else
+      binding.pry
+      flash[:error_alert] = "Invalid Data.  Please try again."
+      erb :'users/login'
+    end
+
+  end
 
 
 
-  # get '/users/login' do
-  #   @user = User.new
-  #   erb :'users/login'
-  # end
-  #
-  # post '/users/login' do
-  #   binding.pry
-  # end
+  get '/register' do
+    if not_logged_in
+      @user = User.new
+      erb :'users/register'
+    else
+      logged_in
+    end
+  end
+
+
+  # NEW: users new
+  get '/users/register' do
+    if not_logged_in
+      @user = User.new  ## Prevents errors on Form Partial.
+      erb :'users/register'
+    else
+      logged_in
+    end
+
+  end
+
+  post '/users/register' do
+    if not_logged_in
+      new_user = User.create(params[:user])
+    else
+      logged_in
+    end
+
+    if new_user.valid?
+      @user = validate_user(params)
+    end
+
+    if @user.present?
+      session[:user_id] = @user.id
+      binding.pry
+      logged_in
+    else
+      binding.pry
+      flash[:error_alert] = "Invalid Data.  Please try again."
+      erb :'users/register'
+    end
+
+  end
 
   # SHOW: displays a single user detail page.
   # get '/users/:id' do
@@ -121,39 +141,22 @@ class UsersController < ApplicationController
 
   ##################################
 
-
-  get '/success' do
-    if session[:user_id]
-      binding.pry
-      erb :'users/success'
-    else
-      binding.pry
-      redirect '/users'
-    end
-  end
-
-  get '/logout' do
-    binding.pry
+  get '/users/logout' do
     session.delete(:user_id)
-    # redirect to("/login")
+    flash[:error_alert] = "Successfully logged out.  Login to continue."
     redirect '/users'
   end
 
-  # post '/login' do
-  #   binding.pry
-  #   user = User.authenticate(params[:user][:email], params[:user][:password])
-  #
-  #   if user != nil
-  #     session[:user_id] = user.id
-  #     # redirect to("/success")
-  #     binding.pry
-  #   else
-  #     binding.pry
-  #   # Look in app/views/index.erb
-  #     # redirect to("/login")
-  #   end
-  #
-  # end
+
+
+  helpers do
+
+    def validate_user(params)
+      User.authenticate(params[:user][:email], params[:user][:pw_hash])
+    end
+
+  end
+
 
 
 end

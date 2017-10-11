@@ -10,36 +10,37 @@ class ApplicationController < Sinatra::Base
     set :session_secret, "password_security"
   end
 
+  # flash[:message] = "Please Enter a Category Name"
+  # flash[:alert] = "Hooray, Flash is working!"
+  # flash[:success_alert] = "It was successful!"
+  # flash[:error_alert] = "There was an error."
+
+
   get '/' do
-    # flash[:message] = "Please Enter a Category Name"
-    # flash[:alert] = "Hooray, Flash is working!"
-    # flash[:success_alert] = "It was successful!"
-    # flash[:error_alert] = "There was an error."
+    if not_logged_in
+      redirect_to_users
+    else
+      logged_in
+    end
 
-
-    # redirect to '/users'
-
-
-    # if !logged_in?
-    #   erb :index, layout: :'not_logged_in_layout' #=> Log In Page
-    # else
-    #   redirect_to_home_page
-    # end
-
-    erb :'index'
   end
 
   helpers do
 
-    # def logged_in?
-    #   !session[:user_id]
-    # end
-    #
-    # def current_user
-    #   binding.pry
-    #   User.find(session[:user_id])
-    # end
-    #
+    def not_logged_in
+      !session[:user_id]
+    end
+
+    def logged_in
+      current_user
+      flash[:success_alert] = "Welcome, #{@user.name}!"
+      redirect_to_home_page
+    end
+
+    def current_user
+      @user = User.find(session[:user_id])
+    end
+
     # def redirect_if_not_logged_in
     #   binding.pry
     #   if !logged_in?
@@ -49,20 +50,18 @@ class ApplicationController < Sinatra::Base
 
 
 
-
+    #################
     def redirect_to_home_page
-      redirect to "/"
+      erb :'index'
     end
 
     def redirect_to_entries
-      redirect to '/entries'
+      redirect '/entries'
     end
 
     def redirect_to_users
-      redirect to '/users'
+      redirect '/users'
     end
-
-
 
   end
 

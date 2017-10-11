@@ -20,12 +20,21 @@ class User < ActiveRecord::Base
   #   end
   # end
 
+  # def self.authenticate(email, password)
+  #   user = User.find_by_email(email)
+  #   if user && user.pw_hash == password
+  #     return user
+  #   else
+  #     redirect '/users'
+  #   end
+  # end
+
   def self.authenticate(email, password)
     user = User.find_by_email(email)
     if user && user.pw_hash == password
-      return user
+      @user = user
     else
-      redirect '/users'
+      @user = nil
     end
   end
 
