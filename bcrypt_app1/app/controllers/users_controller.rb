@@ -22,9 +22,9 @@ class UsersController < ApplicationController
   # NEW: users new
   get '/users/new' do
     if session[:user_id]
+      binding.pry
       redirect '/success'
     else
-      binding.pry
       @user = User.new  ## Prevents errors on Form Partial.
       erb :'users/new'
       # erb :login, locals: { create:true, error:false }
@@ -34,6 +34,7 @@ class UsersController < ApplicationController
 
   post '/users' do
     if session[:user_id]
+      binding.pry
       redirect '/success'
     else
       new_user = User.create(params[:user])
@@ -54,15 +55,13 @@ class UsersController < ApplicationController
 
   ###############
   get '/login' do
-    binding.pry
-
     if @user != nil
       binding.pry
       session[:user_id] = @user.id
       redirect '/success'
     else
       binding.pry
-      redirect '/login'
+      redirect '/users'
     end
   end
 
@@ -134,9 +133,10 @@ class UsersController < ApplicationController
   end
 
   get '/logout' do
+    binding.pry
     session.delete(:user_id)
     # redirect to("/login")
-    redirect to("/users")
+    redirect '/users'
   end
 
   # post '/login' do
