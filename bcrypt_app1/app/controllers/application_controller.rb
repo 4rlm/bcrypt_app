@@ -15,7 +15,6 @@ class ApplicationController < Sinatra::Base
   # flash[:success_alert] = "It was successful!"
   # flash[:error_alert] = "There was an error."
 
-
   get '/' do
     not_logged_in ? redirect_to_users : logged_in
   end
@@ -35,14 +34,6 @@ class ApplicationController < Sinatra::Base
     def current_user
       @user = User.find(session[:user_id])
     end
-
-    # def redirect_if_not_logged_in
-    #   binding.pry
-    #   if !logged_in?
-    #     redirect "/login"
-    #   end
-    # end
-
 
 
     #################

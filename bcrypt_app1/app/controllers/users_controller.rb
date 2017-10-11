@@ -5,7 +5,6 @@ class UsersController < ApplicationController
     not_logged_in ? (erb :'users/login') : logged_in
   end
 
-
   get '/users/login' do
     if @user.valid?
       session[:user_id] = @user.id
@@ -13,21 +12,20 @@ class UsersController < ApplicationController
     else
       redirect '/users'
     end
-
   end
 
   post '/users/login' do
-    @user = validate_user(params)
+    validate_user(params)
 
-    if @user.present?
-      session[:user_id] = @user.id
-      logged_in
-    else
+    if @user.nil?
       flash[:error_alert] = "Invalid Data.  Please try again."
       erb :'users/login'
+    else
+      logged_in
     end
 
   end
+
 
   get '/users/register' do
     not_logged_in ? (erb :'users/register') : logged_in
@@ -35,14 +33,13 @@ class UsersController < ApplicationController
 
   post '/users/register' do
     not_logged_in ? new_user = User.create(params[:user]) : logged_in
-    @user = validate_user(params) if new_user.valid?
+    validate_user(params) if new_user.valid?
 
-    if @user.present?
-      session[:user_id] = @user.id
-      logged_in
-    else
+    if @user.nil?
       flash[:error_alert] = "Invalid Data.  Please try again."
       redirect 'users/register'
+    else
+      logged_in
     end
 
   end
@@ -103,7 +100,10 @@ class UsersController < ApplicationController
   helpers do
 
     def validate_user(params)
-      User.authenticate(params[:user][:email], params[:user][:pw_hash])
+      if params.present?
+        @user = User.authenticate(params[:user][:email], params[:user][:pw_hash])
+        (session[:user_id] = @user.id) unless @user.nil?
+      end
     end
 
   end
