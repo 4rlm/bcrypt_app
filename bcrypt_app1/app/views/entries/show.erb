@@ -1,0 +1,25 @@
+<div class="">
+
+  <div class="erb_header">
+    <h3>Entry Detail View</h3>
+  </div>
+
+  <table class="table table-bordered table-hover table-striped">
+    <tr>
+      <th class="w-small">ID</th>
+<th class="w-small">Title</th>
+<th class="w-small">Body</th>
+
+      <th class="w-med">Updated</th>
+    </tr>
+
+    <tr>
+      <td><%= @entry.id %></td>
+<td><%= @entry.title %></td>
+<td><%= @entry.body %></td>
+
+      <td><%= @entry.updated_at.strftime('%x')%></td>
+    </tr>
+
+  </table>
+</div>

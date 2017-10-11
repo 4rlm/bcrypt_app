@@ -1,0 +1,34 @@
+<h3>View All Entry</h3>
+
+<table class="table table-bordered table-hover table-striped">
+  <tr>
+    <th class="w-small">ID</th>
+<th>Title</th>
+<th>Body</th>
+
+    <th class="w-med">Updated</th>
+    <th colspan="3" class="w-med">Manage</th>
+  </tr>
+  <% @entries.each do |entry|%>
+  <tr>
+    <td class="w-small"><%= entry.id%></td>
+<td><%= entry.title %></td>
+<td><%= entry.body %></td>
+
+    <td><%= entry.updated_at.strftime('%x')%></td>
+
+    <td><a href="/entries/<%= entry.id %>"><span class="glyphicon glyphicon-folder-open"></span></a></td>
+    <td><a href="/entries/<%= entry.id %>/edit"><span class="glyphicon glyphicon-edit"></span></a></td>
+
+    <td><%= erb :'entries/_delete', layout: true, locals: { entry: entry }%></td>
+
+  </tr>
+  <% end %>
+</table>
+
+
+<div class="digg_pagination">
+  <%#= will_paginate @entries, renderer: BootstrapPagination::Sinatra %>
+  <%#= will_paginate @entries %>
+</div>
+

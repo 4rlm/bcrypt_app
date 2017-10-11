@@ -1,0 +1,28 @@
+<%if create%>
+<h1> Hello Welcome to the User Creation Page </h1>
+<% link = "/login/new"%>
+<%else %>
+<h1> Hello Welcome to the Login Page </h1>
+<% link = "/login"%>
+<%end%>
+
+<%if error%>
+<p> <%= error.join(", ") %> </p>
+<%else %>
+<br>
+<%end%>
+
+<form action=<%=link%> method="POST">
+  <%if create%>
+  <label > Full Name
+    <input type="text" name="user[full_name]">
+  </label><br>
+  <%end%>
+  <label>  Email Address
+    <input type="text" name="user[email_address]">
+  </label><br>
+  <label> Password
+    <input type="password" name="user[password]">
+  </label><br>
+  <input type="Submit" value="Login">
+</form>

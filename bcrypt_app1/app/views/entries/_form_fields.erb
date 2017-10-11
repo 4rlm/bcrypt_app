@@ -1,0 +1,18 @@
+<!-- # Duplicate info from new.erb and edit.erb forms goes in this partial. -->
+
+<div class="form-group">
+  <label for="title" class="col-sm-2 control-label">Title</label>
+  <div class="col-sm-10">
+    <input class="form-control" id="title" name="entry[title]" type="text" value="<%= @entry.title %>" placeholder="Title" />
+  </div>
+</div>
+
+<div class="form-group">
+  <label for="body" class="col-sm-2 control-label">Body</label>
+  <div class="col-sm-10">
+    <input class="form-control" id="body" name="entry[body]" type="text" value="<%= @entry.body %>" placeholder="Body" />
+  </div>
+</div>
+
+
+
