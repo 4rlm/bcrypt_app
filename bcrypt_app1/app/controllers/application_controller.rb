@@ -26,17 +26,18 @@ class ApplicationController < Sinatra::Base
     end
 
     def logged_in
-      current_user unless @user.present?
-      flash[:success_alert] = "Welcome, #{@user.name}!"
-      redirect_to_home_page
+      if @user
+        flash[:success_alert] = "Welcome, #{@user.name}!"
+        redirect_to_home_page
+      else
+        current_user
+      end
     end
 
     def current_user
-      @user = User.find(session[:user_id])
+      @user = User.find(session[:user_id]) if session[:user_id]
     end
 
-
-    #################
     def redirect_to_home_page
       erb :'index'
     end

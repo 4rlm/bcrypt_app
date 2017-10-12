@@ -1,12 +1,12 @@
 class UsersController < ApplicationController
 
-  # INDEX: users view all.
+
   get '/users' do
     not_logged_in ? (erb :'users/login') : logged_in
   end
 
   get '/users/login' do
-    if @user.valid?
+    if @user && @user.valid?
       session[:user_id] = @user.id
       logged_in
     else
@@ -23,9 +23,7 @@ class UsersController < ApplicationController
     else
       logged_in
     end
-
   end
-
 
   get '/users/register' do
     not_logged_in ? (erb :'users/register') : logged_in
@@ -41,61 +39,54 @@ class UsersController < ApplicationController
     else
       logged_in
     end
-
   end
 
-
-
-
-
-  # SHOW: displays a single user detail page.
-  # get '/users/:id' do
-  #   @user = User.find(params[:id])
-  #   erb :'users/show'
-  # end
+  get '/users/:id' do
+    if params[:id] == "logout"
+      session[:user_id] = nil
+      @user = nil
+      redirect '/users/login'
+    else
+      @user = User.find(params[:id])
+      erb :'users/show'
+    end
+  end
 
   # EDIT:
-  # get '/users/:id/edit' do
-  #   @user = User.find(params[:id])
-  #   erb :'users/edit'
-  # end
+  get '/users/:id/edit' do
+    @user = User.find(params[:id])
+    erb :'users/edit'
+  end
 
   ##### Update Method (patch or put) ####
 
   # UPDATE: Method for patch and put
-  # def update_user
-  #   @user = User.find(params[:id])
-  #   @user.update(params[:user])
-  #   redirect "/users/#{@user.id}"
-  # end
+  def update_user
+    @user = User.find(params[:id])
+    @user.update(params[:user])
+    redirect "/users/#{@user.id}"
+  end
 
   # UPDATE: patch
-  # patch '/users/:id' do
-  #   update_user
-  # end
+  patch '/users/:id' do
+    update_user
+  end
 
   # UPDATE: put
-  # put '/users/:id' do
-  #   update_user
-  # end
+  put '/users/:id' do
+    update_user
+  end
 
   #################################
 
   # DELETE:
-  # delete '/users/:id' do
-  #   User.find(params[:id]).destroy!
-  #   redirect '/users'
-  # end
-
-
-  ##################################
-
-  get '/users/logout' do
-    session.delete(:user_id)
-    flash[:error_alert] = "Successfully logged out.  Login to continue."
+  delete '/users/:id' do
+    User.find(params[:id]).destroy!
     redirect '/users'
   end
 
+
+  ##################################
 
   helpers do
 
