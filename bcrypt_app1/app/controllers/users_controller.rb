@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-
+  include UsersHelper
 
   get '/users' do
     not_logged_in ? (erb :'users/login') : logged_in
@@ -58,15 +58,6 @@ class UsersController < ApplicationController
     erb :'users/edit'
   end
 
-  ##### Update Method (patch or put) ####
-
-  # UPDATE: Method for patch and put
-  def update_user
-    @user = User.find(params[:id])
-    @user.update(params[:user])
-    redirect "/users/#{@user.id}"
-  end
-
   # UPDATE: patch
   patch '/users/:id' do
     update_user
@@ -77,26 +68,10 @@ class UsersController < ApplicationController
     update_user
   end
 
-  #################################
-
   # DELETE:
   delete '/users/:id' do
     User.find(params[:id]).destroy!
     redirect '/users'
-  end
-
-
-  ##################################
-
-  helpers do
-
-    def validate_user(params)
-      if params.present?
-        @user = User.authenticate(params[:user][:email], params[:user][:pw_hash])
-        (session[:user_id] = @user.id) unless @user.nil?
-      end
-    end
-
   end
 
 end
